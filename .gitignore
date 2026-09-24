@@ -1,2 +1,8 @@
 EuroSAT/
+EuroSAT_allBands/
 EuroSAT.zip
+CV2
+.venv/
+__pycache__/
+.ipynb_checkpoints/
+
