@@ -1,0 +1,15 @@
+Project Philosophy & AI Policy
+Individual project: every student works independently on their own dataset and pipeline
+The "Native PyTorch First" rule: because AI can easily write training loops and modern wrappers hide the underlying mechanics, you must demonstrate mastery of core PyTorch primitives — tensor operations, torch.autograd, nn.Module, forward passes, loss calculation, backward pass, and optimizer steps
+High-level frameworks (PyTorch Lightning, Hugging Face, etc.) are permitted only in Milestone 2, provided that (1) the Milestone 1 baseline was built entirely in pure PyTorch, and (2) you can thoroughly defend and explain the underlying mechanics the abstraction handles (gradient accumulation, distributed hooks, batch collating)
+The "whiteboard / shape" defense: at the defense you will be expected to write down and explain the exact tensor dimensions — (B, C, H, W) or (B, T, D) — at each layer transition, explain why gradients explode or vanish in your architecture, and modify forward passes on the fly
+
+Milestone 1: Data Pipeline & Baseline Model
+Goal: establish a working, bug-free end-to-end training pipeline in pure PyTorch.
+
+Deliverable: a fully runnable Jupyter Notebook or clean Python code, verified during an in-class consultation.
+
+Custom dataset & dataloaders: subclass torch.utils.data.Dataset implementing custom __len__ and __getitem__; instantiate a DataLoader with batching, shuffling and worker management; visualize at least one batch post-transformation (transformed image tensors, decoded tokens, or spectrograms with correct tensor shapes)
+Baseline architecture (torch.nn.Module): implement a straightforward baseline network from scratch (e.g. a simple 2–3 layer CNN, a vanilla LSTM/GRU, or a shallow MLP); no pre-trained weights yet — the goal is to understand the model's unassisted performance
+Explicit training loop: write the complete training and validation loops manually — optimizer.zero_grad(), loss.backward(), optimizer.step(), and metric accumulation across batches
+The overfit sanity check: take a tiny slice of data (e.g. 8–16 samples) and show your model can overfit it to near-zero loss and 100% accuracy — this guarantees gradients flow correctly, labels match predictions, and the pipeline has no silent broadcasting bugs
