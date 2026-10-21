@@ -65,8 +65,8 @@
 
 ## 3. Zakázkový datový pipeline (Dataset & DataLoader)
 
-### ⚠️ Proč nestačil původní přístup načtení všeho do RAM?
-> Původní kód načetl všech 27 000 obrázků naráz do obřího pole v RAM. U velkých projektů by vám došla operační paměť. Zadání navíc striktně vyžaduje vytvořit vlastní třídu dědící z `torch.utils.data.Dataset`.
+### ⚠️ Proč nepoužíváme eager loading (načtení všeho do RAM)?
+> Kdybychom načetli všech 27 000 obrázků naráz do pole v RAM, spotřebovali bychom zbytečně gigabajty paměti a u větších projektů by počítač okamžitě zkolaboval na chybě *Out Of Memory* (OOM). Náš projekt proto využívá **100% čistý Lazy Loading** hned od začátku: i výpočet kanálových statistik (`mean_rgb`, `std_rgb`) pro z-score standardizaci provádíme streamovaně po dávkách přes `DataLoader` s konstantní paměťovou náročností $\mathcal{O}(\text{batch}) \approx 3\text{ MB}$. Zadání navíc striktně vyžaduje vytvořit vlastní třídu dědící z `torch.utils.data.Dataset`.
 
 ---
 
