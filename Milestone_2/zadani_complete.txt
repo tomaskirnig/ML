@@ -1,0 +1,45 @@
+Project Philosophy & AI Policy
+Individual project: every student works independently on their own dataset and pipeline
+The "Native PyTorch First" rule: because AI can easily write training loops and modern wrappers hide the underlying mechanics, you must demonstrate mastery of core PyTorch primitives — tensor operations, torch.autograd, nn.Module, forward passes, loss calculation, backward pass, and optimizer steps
+High-level frameworks (PyTorch Lightning, Hugging Face, etc.) are permitted only in Milestone 2, provided that (1) the Milestone 1 baseline was built entirely in pure PyTorch, and (2) you can thoroughly defend and explain the underlying mechanics the abstraction handles (gradient accumulation, distributed hooks, batch collating)
+The "whiteboard / shape" defense: at the defense you will be expected to write down and explain the exact tensor dimensions — (B, C, H, W) or (B, T, D) — at each layer transition, explain why gradients explode or vanish in your architecture, and modify forward passes on the fly
+Dataset Selection
+Deadline: Week 3
+You may choose data from any domain — Computer Vision, NLP, Audio, Multimodal, or complex time series/tabular. However, the dataset must justify using deep learning over classic tree-based algorithms. Every proposal must meet the following measurable requirements:
+
+Modality	Minimum size	Structural constraint
+Computer Vision	≥ 5,000 images	Multi-class (≥ 5 classes) or complex regression/segmentation/detection
+NLP / Text	≥ 10,000 documents or sequences	Requires subword tokenization, vocabulary mapping, or custom embeddings
+Audio / Speech	≥ 3 hours of audio clips	Requires on-the-fly or offline spectrogram / MFCC extraction
+Time Series / Sequential	≥ 50,000 time-steps / observations	High-frequency or multi-variate sequential dependency (not static tabular data)
+Strictly prohibited: standard tutorial datasets natively bundled with standard libraries without significant structural alteration (e.g. vanilla MNIST, CIFAR-10, FashionMNIST, IMDb sentiment, Iris, Boston Housing)
+Encouraged: domain-specific datasets, data collected from past projects or bachelor thesis research, or Kaggle challenge datasets (post-competition)
+Milestone 1: Data Pipeline & Baseline Model
+Weeks 6–7
+Goal: establish a working, bug-free end-to-end training pipeline in pure PyTorch.
+
+Deliverable: a fully runnable Jupyter Notebook or clean Python code, verified during an in-class consultation.
+
+Custom dataset & dataloaders: subclass torch.utils.data.Dataset implementing custom __len__ and __getitem__; instantiate a DataLoader with batching, shuffling and worker management; visualize at least one batch post-transformation (transformed image tensors, decoded tokens, or spectrograms with correct tensor shapes)
+Baseline architecture (torch.nn.Module): implement a straightforward baseline network from scratch (e.g. a simple 2–3 layer CNN, a vanilla LSTM/GRU, or a shallow MLP); no pre-trained weights yet — the goal is to understand the model's unassisted performance
+Explicit training loop: write the complete training and validation loops manually — optimizer.zero_grad(), loss.backward(), optimizer.step(), and metric accumulation across batches
+The overfit sanity check: take a tiny slice of data (e.g. 8–16 samples) and show your model can overfit it to near-zero loss and 100% accuracy — this guarantees gradients flow correctly, labels match predictions, and the pipeline has no silent broadcasting bugs
+Milestone 2: Advanced Architecture, Optimization & Defense
+Weeks 11–12
+Goal: elevate model performance using modern architectures, regularization, and advanced training techniques.
+
+Deliverable: a complete code repository, reproducible training logs, and a slide presentation.
+
+Architectural evolution (pick at least one major direction):
+Option A — Transfer learning / pretrained weights: fine-tune an existing backbone (e.g. ResNet, ConvNeXt, BERT, ViT) with frozen base layers followed by gradual unfreezing and discriminative learning rates
+Option B — Modern custom architecture: implement advanced components from scratch (e.g. residual connections, multi-head attention, bidirectional recurrent layers, bottleneck blocks)
+Data enhancement & regularization: dynamic data augmentation during training (e.g. Mixup, CutMix, Random Erasing, SpecAugment, or synonym replacement); structural regularization such as weight decay, dropout, DropPath, or layer/batch normalization
+Advanced optimization: dynamic learning-rate scheduling (cosine annealing, OneCycleLR, warmup); gradient clipping if using sequential/recurrent setups; experiment tracking with plots (TensorBoard, Weights & Biases, or Matplotlib logs showing training vs. validation curves)
+High-level abstractions (optional): you may refactor this milestone using PyTorch Lightning or Hugging Face Trainer, but you must be able to explain all hooks and configurations used
+Failure analysis: analyze the top failure cases (e.g. plot the top-5 highest-loss samples or inspect confusion matrices) and explain why the network struggled with these particular instances
+Evaluation & Defense Protocol
+The defense consists of an oral presentation and an interactive code/architecture review:
+
+Presentation (approx. 7–10 minutes): problem setup, architecture diagram, ablation studies, and evaluation results
+Methodological defense: walking through tensor dimensions throughout the network; justifying loss functions (e.g. standard cross-entropy vs. focal loss vs. BCEWithLogitsLoss); explaining the difference between training mode (model.train()) and evaluation mode (model.eval())
+Live code inspection: answering questions about random seeds, device placement (.to(device)), and preventing memory leaks in the validation loop (e.g. torch.no_grad(), .detach(), .item())
