@@ -32,11 +32,11 @@ flowchart TD
     end
 
     subgraph Backbone ["2. ResNet-50 Backbone (ImageNet Weights)"]
-        BATCH --> STEM["Conv1 + BatchNorm + MaxPool -> (B, 64, 32, 32)"]
-        STEM --> L1["Layer 1 (Residual blocks) -> (B, 256, 32, 32)"]
-        L1 --> L2["Layer 2 (Residual blocks) -> (B, 512, 16, 16)"]
-        L2 --> L3["Layer 3 (Residual blocks) -> (B, 1024, 8, 8)"]
-        L3 --> L4["Layer 4 (Residual blocks) -> (B, 2048, 4, 4)"]
+        BATCH --> STEM["Conv1 + BatchNorm + MaxPool -> (B, 64, 16, 16)"]
+        STEM --> L1["Layer 1 (Residual blocks) -> (B, 256, 16, 16)"]
+        L1 --> L2["Layer 2 (Residual blocks) -> (B, 512, 8, 8)"]
+        L2 --> L3["Layer 3 (Residual blocks) -> (B, 1024, 4, 4)"]
+        L3 --> L4["Layer 4 (Residual blocks) -> (B, 2048, 2, 2)"]
         L4 --> GAP["AdaptiveAvgPool2d -> (B, 2048, 1, 1)"]
     end
 
@@ -60,8 +60,8 @@ flowchart TD
 ## 📅 3. Akční plán krok za krokem (Milestone 2 Sprint)
 
 ### Krok 1: Inicializace prostředí Milestone 2
-* [ ] Vytvořit symbolický odkaz na dataset z Milestone 1 (`ln -s ../Milestone_1/EuroSAT EuroSAT`), abychom neplýtvali místem na disku.
-* [ ] Zkopírovat notebook z Milestone 1 a připravit čistou strukturu pro Milestone 2 (`ML_KIR0041_milestone_02.ipynb`).
+* [ ] Použít přímé dynamické vyhledání cesty k `EuroSAT` pomocí `pathlib.Path` (žádné OS symlinky, bezproblémové na Windows i Colabu).
+* [ ] Zkopírovat osvědčený pipeline z Milestone 1 a připravit čistou strukturu pro Milestone 2 (`ML_KIR0041_milestone_02.ipynb`).
 * [ ] Zachovat deterministické dělení dat (seed 42: train / val / test), aby bylo srovnání s M1 stoprocentně vědecky validní.
 
 ### Krok 2: Pokročilé dynamické augmentace (Data Enhancement)
@@ -75,7 +75,11 @@ flowchart TD
 * [ ] Nahradit `model.fc` za custom sekvenci: `nn.Sequential(nn.Dropout(0.3), nn.Linear(2048, 10))`.
 * [ ] Provést **Whiteboard Shape Check**:
   - Vstup: $(B, 3, 64, 64)$
-  - Po `layer4`: $(B, 2048, 4, 4)$
+  - Po STEM (Conv1 + BN + MaxPool): $(B, 64, 16, 16)$
+  - Po `layer1`: $(B, 256, 16, 16)$
+  - Po `layer2`: $(B, 512, 8, 8)$
+  - Po `layer3`: $(B, 1024, 4, 4)$
+  - Po `layer4`: $(B, 2048, 2, 2)$
   - Po `avgpool`: $(B, 2048, 1, 1)$
   - Po `flatten`: $(B, 2048)$
   - Výstup: $(B, 10)$ logity.
