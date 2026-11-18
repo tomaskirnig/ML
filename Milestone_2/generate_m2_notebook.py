@@ -24,7 +24,7 @@ def create_notebook():
     md("""
 # 🛰️ EuroSAT Land Use Classification — Milestone 2
 ## Advanced Architecture, Transfer Learning, Optimization & Failure Analysis
-**Autor:** KIR0041 (Tomáš Kirchner)  
+**Autor:** KIR0041 (Tomáš Kirnig)  
 **Předmět:** Strojové učení / Hluboké učení  
 **Cíl Milestone 2:** Přechod od výchozí Baseline CNN z M1 k předtrénovanému modelu (Option A — ResNet-50 Transfer Learning), zavedení dynamických augmentací (Mixup & CutMix), diskriminativního učení, Cosine Annealing plánovače, hloubková diagnostika selhání a ablační studie.
 """)
