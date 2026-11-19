@@ -56,18 +56,19 @@ Rychlé a přesné odpovědi na nejčastější záludné otázky zkoušejícíh
 
 ### Q7: Jaké jsou přesné naměřené výsledky a co dokazuje ablační studie?
 * **M1 Baseline CNN:** Test Acc **81.48 %**, Test Loss **0.6512**, Macro F1 **0.8035**.
-* **M2 Fáze 1 (Linear Probe):** Val Acc **83.63 %**, Val Loss **0.5155** (zmrazený ImageNet backbone, trénink jen hlavy).
-* **M2 Fáze 2 (Full Transfer Learning):** Test Acc **97.07 %**, Test Loss **0.1018**, Macro F1 **0.9698** (unfrozen backbone, diskriminativní LR, Cosine Annealing, Mixup/CutMix).
-* **Závěr pro zkoušejícího:** Samotné předtrénované váhy nestačí (zisk jen +2.15 % v Fázi 1). Zásadní průlom přináší až plná doménová adaptace konvolučních filtrů s pokročilou regularizací (skok o dalších **+13.44 %** až na **97.07 %**).
+* **M2 Fáze 1 (Linear Probe):** Val Acc **85.78 %**, Val Loss **0.4628** (zmrazený ImageNet backbone, trénink jen hlavy).
+* **M2 Fáze 2 (Full Transfer Learning):** Test Acc **97.44 %**, Test Loss **0.0967**, Macro F1 **0.9740** (unfrozen backbone, diskriminativní LR, Cosine Annealing, Mixup/CutMix).
+* **Závěr pro zkoušejícího:** Samotné předtrénované váhy přináší zisk na 85.78 %. Zásadní průlom přináší až plná doménová adaptace konvolučních filtrů s pokročilou regularizací (skok o dalších **+11.66 %** až na **97.44 %**).
 
 ---
 
 ### Q8: Co odhalila Failure Analysis (Top-5 nejhorších chyb modelu)?
-1. **Pasture $\to$ Highway (Rank 1, Loss 5.92, Conf 85.5 %):** Lineární hospodářské ohraničení, úzké polní cesty nebo suché travnaté pruhy v rozlišení $64\times 64$ tvoří geometrické přímky připomínající dálnici.
-2. **PermanentCrop $\to$ HerbaceousVegetation (Rank 2 & 3, Loss 5.67 a 5.18, Conf 94.9 % a 78.0 %):** Trvalé plodiny (sady, vinice) a bylinná vegetace sdílejí téměř identické NDVI / chlorofylové odrazivosti spektra.
-3. **Pasture $\to$ River (Rank 4, Loss 4.57, Conf 94.9 %):** Zavodněné odvodňovací strouhy nebo lesklé mokřady na pastvině odrážejí světlo stejně jako vodní tok.
-4. **Pasture $\to$ Forest (Rank 5, Loss 4.50, Conf 68.2 %):** Hranice pastvin lemovaná hustým stromořadím.
-* **Per-Class rekordy:** `Residential` dosáhl **100 % Recall** (žádná obytná zóna nebyla přehlédnuta), `Industrial` a `SeaLake` dosáhly **100 % Precision** (žádné falešně pozitivní detekce).
+1. **Pasture $\to$ Highway (Rank 1, Loss 7.12, Conf 93.9 %):** Lineární hospodářské ohraničení, úzké polní cesty nebo suché travnaté pruhy v rozlišení $64\times 64$ tvoří geometrické přímky připomínající dálnici.
+2. **HerbaceousVegetation $\to$ Forest (Rank 2, Loss 6.68, Conf 95.5 %):** Přechodová bylinná vegetace s hustým křovinatým porostem vizuálně splývá s okrajem lesa.
+3. **PermanentCrop $\to$ Forest (Rank 3, Loss 6.28, Conf 74.9 %):** Vzrostlé ovocné sady z nadhledu vytvářejí kompaktní koruny stromů nerozeznatelné od lesního porostu.
+4. **PermanentCrop $\to$ HerbaceousVegetation (Rank 4, Loss 5.11, Conf 64.1 %):** Nízké vinice nebo mladé trvalé kultury sdílejí chlorofylové odrazivosti spektra s bylinným patrem.
+5. **Industrial $\to$ Highway (Rank 5, Loss 4.43, Conf 94.5 %):** Rozsáhlé asfaltové plochy parkovišť a nákladových ramp v průmyslových zónách.
+* **Per-Class rekordy:** `Residential` dosáhl **100 % Recall** (žádná obytná zóna nebyla přehlédnuta), `SeaLake` dosáhl **100 % Precision** (žádné falešně pozitivní detekce), `Industrial` dosáhl **99.2 % Precision i Recall**.
 
 ---
 

@@ -184,7 +184,7 @@ print(f"Třídy: {', '.join(CLASS_NAMES)}")
 # 2. Vlastní Dataset & Pokročilý Augmentační Pipeline (Mixup & CutMix)
 V souladu se zadáním pro Milestone 2 implementujeme:
 1. Zakázkový `EuroSATDataset` (subclass `torch.utils.data.Dataset`).
-2. Pokročilé prostorové a barevné perturbace (`RandomResizedCrop`, `RandomRotation(15)`, `ColorJitter`).
+2. Pokročilé prostorové a barevné perturbace s reflection paddingem (`Pad(8, reflect)`, `RandomRotation(15)`, `CenterCrop(64)`, `RandomResizedCrop`, `ColorJitter`).
 3. Dynamické augmentace **Mixup** a **CutMix** v čistém PyTorch integrované přímo do trénovacího cyklu.
 """)
 
@@ -220,10 +220,12 @@ IMAGENET_MEAN = [0.485, 0.456, 0.406]
 IMAGENET_STD  = [0.229, 0.224, 0.225]
 
 train_transform = transforms.Compose([
+    transforms.Pad(padding=8, padding_mode="reflect"),
+    transforms.RandomRotation(degrees=15),
+    transforms.CenterCrop(64),
     transforms.RandomResizedCrop(64, scale=(0.8, 1.0)),
     transforms.RandomHorizontalFlip(p=0.5),
     transforms.RandomVerticalFlip(p=0.5),
-    transforms.RandomRotation(degrees=15),
     transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2),
     transforms.ToTensor(),
     transforms.Normalize(mean=IMAGENET_MEAN, std=IMAGENET_STD)
@@ -299,7 +301,7 @@ print("Funkce apply_mixup_cutmix úspěšně definována.")
 sample_x, sample_y = next(iter(train_loader))
 mixed_x, y_a, y_b, lam = apply_mixup_cutmix(sample_x, sample_y, alpha=0.3, mix_prob=1.0)
 
-fig, axes = plt.subplots(1, 5, figsize=(15, 3.5))
+fig, axes = plt.subplots(1, 5, figsize=(16, 3.8))
 mean_t = torch.tensor(IMAGENET_MEAN).view(3, 1, 1)
 std_t  = torch.tensor(IMAGENET_STD).view(3, 1, 1)
 
@@ -313,11 +315,11 @@ for i in range(5):
     title = f"{t_a} ({lam:.2f})\\n+ {t_b}" if y_b is not None else t_a
     
     axes[i].imshow(img)
-    axes[i].set_title(title, fontsize=9)
+    axes[i].set_title(title, fontsize=8.5, pad=6)
     axes[i].axis("off")
 
-plt.suptitle("Ukázka dynamických augmentací (Mixup / CutMix)", fontsize=13, weight="bold")
-plt.tight_layout()
+plt.tight_layout(rect=[0, 0, 1, 0.86], w_pad=2.0)
+plt.suptitle("Ukázka dynamických augmentací (Mixup / CutMix)", fontsize=12, weight="bold", y=0.98)
 plt.show()
 """)
 

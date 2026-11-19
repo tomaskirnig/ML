@@ -21,7 +21,7 @@ Tento dokument obsahuje strukturu slajdů, textový obsah, diagramy a **mluvnick
 * **Dataset:** EuroSAT (Sentinel-2 satelity, ESA).
   - 27 000 RGB snímků ve 10 třídách (Forest, River, Highway, Industrial, Residential, Pasture, ...).
   - Nízké prostorové rozlišení: $64 \times 64$ pixelů na kanál (3 kanály).
-* **Vědecké rozdělení:** Deterministický seed 42 $\to$ 70 % Train (18 900), 10 % Val (2 700), 20 % Test (5 400).
+* **Vědecké rozdělení:** Deterministický seed 42 $\to$ 70 % Train (18 900), 20 % Val (5 400), 10 % Test (2 700).
 * **Cíl M2:** Překonat limitaci baseline modelu (~81.5 %) a dosáhnout stavu techniky (>97 %) pomocí transfer learningu a moderních optimalizací.
 
 > 🎙️ **Speaker Note:**  
@@ -95,14 +95,14 @@ Vstup: (B, 3, 64, 64)
 | Model / Fáze | Architektura | Augmentace | Optimalizace | Test Loss | Test Acc | Macro F1 |
 | :--- | :--- | :--- | :--- | :---: | :---: | :---: |
 | **M1 Baseline** | 3-vrstvá CNN | Flipy | Adam, fixní LR | 0.6512 | 81.48 % | 0.8035 |
-| **M2 Fáze 1** | ResNet-50 (Frozen) | Flipy + Crop | AdamW, fixní LR | ~0.3420 | ~89.50 % | ~0.8910 |
-| **M2 Fáze 2** | ResNet-50 (Unfrozen) | Mixup + CutMix | Cosine Annealing + Disc. LR | **< 0.1150** | **> 97.60 %** | **> 0.9750** |
+| **M2 Fáze 1** | ResNet-50 (Frozen) | Flipy + Crop | AdamW, fixní LR | 0.4628 | 85.78 % | ~0.8550 |
+| **M2 Fáze 2** | ResNet-50 (Unfrozen) | Mixup + CutMix | Cosine Annealing + Disc. LR | **0.0967** | **97.44 %** | **0.9740** |
 
 * **Zrychlení konvergence:** Zmrazený model překonal baseline už v první epoše.
-* **Celkový zisk:** Zvýšení přesnosti o více než **16 procentních bodů** při třetinové ztrátě.
+* **Celkový zisk:** Zvýšení přesnosti o téměř **16 procentních bodů** při sedminové ztrátě.
 
 > 🎙️ **Speaker Note:**  
-> *"Zde vidíte výsledky ablační studie. Pouhé zmrazené příznaky z ImageNetu s novou lineární hlavou okamžitě vyskočily na 89.5 %. Jakmile jsme v druhé fázi zapojili postupné rozmrazení, diskriminativní LR, Cosine Annealing a Mixup/CutMix, přesnost dosáhla přes 97.6 % a Macro F1 překročil 0.97. Tím jsme eliminovali jakýkoliv bias vůči méně zastoupeným třídám."*
+> *"Zde vidíte výsledky ablační studie. Pouhé zmrazené příznaky z ImageNetu s novou lineární hlavou okamžitě dosáhly 85.78 %. Jakmile jsme v druhé fázi zapojili postupné rozmrazení, diskriminativní LR, Cosine Annealing a Mixup/CutMix s reflection paddingem, testovací přesnost vyskočila na 97.44 % a Macro F1 dosáhl 0.9740. Tím jsme eliminovali jakýkoliv bias vůči méně zastoupeným třídám."*
 
 ---
 
@@ -115,7 +115,7 @@ Vstup: (B, 3, 64, 64)
 * **Závěr z konfuzní matice:** 8 z 10 tříd dosahuje přesnosti >98 %. Záměny nastávají pouze na fyzikálních a doménových hranicích, nikoliv kvůli strukturální chybě modelu.
 
 > 🎙️ **Speaker Note:**  
-> *"Pro diagnostiku selhání jsme seřadili všech 5 400 testovacích vzorků podle jejich individuální ztráty. Top-5 nejhorších chyb jasně ukazuje fyzikální limity rozlišení 64×64. Model chybuje výhradně v hraničních případech: například u travnatých ploch Pasture vs. Herbaceous Vegetation, kde je spektrální křivka vegetace stejná, nebo u úzkých úseků silnic v lese připomínajících řeku. Nejde tedy o chybu modelu, ale o přirozený šum v popisku satelitních dat."*
+> *"Pro diagnostiku selhání jsme seřadili všech 2 700 testovacích vzorků podle jejich individuální ztráty. Top-5 nejhorších chyb jasně ukazuje fyzikální limity rozlišení 64×64. Model chybuje výhradně v hraničních případech: například u travnatých ploch Pasture vs. Herbaceous Vegetation, kde je spektrální křivka vegetace stejná, nebo u úzkých úseků silnic v lese připomínajících řeku. Nejde tedy o chybu modelu, ale o přirozený šum v popisku satelitních dat."*
 
 ---
 

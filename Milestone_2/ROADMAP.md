@@ -111,8 +111,8 @@ Sestavena srovnávací tabulka prokazující zásadní skok v kvalitě modelu na
 | Model / Experiment | Backbone | Augmentace | LR Scheduler | Test Loss | Test Accuracy | Macro F1 |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **1. M1 Baseline** | 3-vrstvá CNN (Scratch) | Základní (Flips) | Konstantní | 0.6512 | 81.48 % | 0.8035 |
-| **2. M2 Fáze 1 (Linear Probe)** | ResNet-50 (Zmrazený ImageNet) | Základní (bez Mixupu) | Konstantní | 0.5155 | 83.63 % | ~0.8350 |
-| **3. M2 Fáze 2 (Full Transfer Learning)** | ResNet-50 (Unfrozen + Disc. LR) | Mixup + CutMix | Cosine Annealing | **0.1018** | **97.07 %** | **0.9698** |
+| **2. M2 Fáze 1 (Linear Probe)** | ResNet-50 (Zmrazený ImageNet) | Základní (bez Mixupu) | Konstantní | 0.4628 | 85.78 % | ~0.8550 |
+| **3. M2 Fáze 2 (Full Transfer Learning)** | ResNet-50 (Unfrozen + Disc. LR) | Mixup + CutMix | Cosine Annealing | **0.0967** | **97.44 %** | **0.9740** |
 
 ---
 
@@ -139,7 +139,7 @@ Sestavena srovnávací tabulka prokazující zásadní skok v kvalitě modelu na
 
 ## 🛠️ 5. Technický rozbor a plán refaktoringu / optimalizace projektu (Code Review & Optimization Plan)
 
-Na základě reálného běhu celého sešitu a naměřených metrik (Test Accuracy: **97.07 %**, Macro F1: **0.9698**, Test Loss: **0.1018**) byl proveden detailní rozbor implementace. Zde je strukturovaný přehled doporučených úprav, optimalizací a oprav pro budoucí spuštění na Colab GPU i lokálním stroji:
+Na základě reálného běhu celého sešitu a naměřených metrik (Test Accuracy: **97.44 %**, Macro F1: **0.9740**, Test Loss: **0.0967**) byl proveden detailní rozbor implementace. Zde je strukturovaný přehled doporučených úprav, optimalizací a oprav pro budoucí spuštění na Colab GPU i lokálním stroji:
 
 ### 5.1 Optimalizace načítání dat a DataLoaderu (Data I/O Bottleneck)
 * **Současný stav:**
