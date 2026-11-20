@@ -558,27 +558,31 @@ print(f"\\nTrénování dokončeno! Načteny nejlepší váhy s Val Acc: {best_v
 # 4.4 Průběh trénování: Křivky ztráty, přesnosti a Learning Rate
 fig, axes = plt.subplots(1, 3, figsize=(18, 4.5))
 
-axes[0].plot(history["train_loss"], label="Train Loss", color="royalblue", lw=2)
-axes[0].plot(history["val_loss"], label="Val Loss", color="crimson", lw=2)
-axes[0].axvline(x=epochs_p1-0.5, color="gray", linestyle="--", label="Start Fáze 2")
+epochs_range = range(1, len(history["train_loss"]) + 1)
+
+axes[0].plot(epochs_range, history["train_loss"], label="Train Loss", color="royalblue", lw=2)
+axes[0].plot(epochs_range, history["val_loss"], label="Val Loss", color="crimson", lw=2)
+axes[0].axvline(x=epochs_p1 + 0.5, color="gray", linestyle="--", label="Start Fáze 2")
 axes[0].set_title("Vývoj ztrátové funkce (Loss)", fontsize=12, weight="bold")
 axes[0].set_xlabel("Epocha")
 axes[0].legend()
 
-axes[1].plot(history["train_acc"], label="Train Acc", color="royalblue", lw=2)
-axes[1].plot(history["val_acc"], label="Val Acc", color="crimson", lw=2)
-axes[1].axvline(x=epochs_p1-0.5, color="gray", linestyle="--", label="Start Fáze 2")
+axes[1].plot(epochs_range, history["train_acc"], label="Train Acc", color="royalblue", lw=2)
+axes[1].plot(epochs_range, history["val_acc"], label="Val Acc", color="crimson", lw=2)
+axes[1].axvline(x=epochs_p1 + 0.5, color="gray", linestyle="--", label="Start Fáze 2")
 axes[1].set_title("Vývoj přesnosti (Accuracy %)", fontsize=12, weight="bold")
 axes[1].set_xlabel("Epocha")
 axes[1].legend()
 
-axes[2].plot(history["lr"], label="Backbone LR", color="forestgreen", lw=2)
+axes[2].plot(epochs_range, history["lr"], label="Backbone LR", color="forestgreen", lw=2)
+axes[2].axvline(x=epochs_p1 + 0.5, color="gray", linestyle="--", label="Start Fáze 2")
 axes[2].set_title("Vývoj Cosine Annealing Learning Rate", fontsize=12, weight="bold")
 axes[2].set_xlabel("Epocha")
 axes[2].set_yscale("log")
 axes[2].legend()
 
 plt.tight_layout()
+plt.savefig('loss_acc_curves.png', dpi=300, bbox_inches='tight')
 plt.show()
 """)
 
@@ -633,14 +637,15 @@ print(classification_report(all_targets, all_preds, target_names=CLASS_NAMES, di
 # 5.2 Normalizovaná konfuzní matice
 cm = confusion_matrix(all_targets, all_preds, normalize="true")
 
-plt.figure(figsize=(10, 8))
-sns.heatmap(cm, annot=True, fmt=".2%", cmap="Blues",
+plt.figure(figsize=(12, 10))
+sns.heatmap(cm, annot=True, fmt=".2%", cmap="Blues", annot_kws={"size": 8.5},
             xticklabels=CLASS_NAMES, yticklabels=CLASS_NAMES)
-plt.title("Normalizovaná konfuzní matice — ResNet-50 Fine-Tuned", fontsize=14, weight="bold")
-plt.xlabel("Predikovaná třída", fontsize=12)
-plt.ylabel("Skutečná třída (Ground Truth)", fontsize=12)
+plt.title("Normalizovaná konfuzní matice — ResNet-50 Fine-Tuned", fontsize=14, weight="bold", pad=15)
+plt.xlabel("Predikovaná třída", fontsize=12, labelpad=10)
+plt.ylabel("Skutečná třída (Ground Truth)", fontsize=12, labelpad=10)
 plt.xticks(rotation=45, ha="right")
 plt.tight_layout()
+plt.savefig('confusion_matrix_resnet50.png', dpi=300, bbox_inches='tight')
 plt.show()
 """)
 
@@ -654,7 +659,7 @@ V souladu se zadáním identifikujeme a detailně analyzujeme **Top-5 vzorků s 
 # 6.1 Vyhledání a vizualizace Top-5 vzorků s nejvyšší ztrátou
 top5_indices = np.argsort(test_losses)[-5:][::-1]
 
-fig, axes = plt.subplots(1, 5, figsize=(18, 4))
+fig, axes = plt.subplots(1, 5, figsize=(18, 4.5))
 mean_t = torch.tensor(IMAGENET_MEAN).view(3, 1, 1)
 std_t  = torch.tensor(IMAGENET_STD).view(3, 1, 1)
 
@@ -670,14 +675,15 @@ for rank, idx in enumerate(top5_indices):
     loss_val   = test_losses[idx]
     fname      = test_df.iloc[idx]["Filename"]
 
-    print(f"Rank {rank+1}: {fname} | GT: {gt_class:<20} | Pred: {pred_class:<20} | Conf: {pred_prob:5.1f}% | Loss: {loss_val:.4f}")
+    print(f"Rank {rank+1}: {fname} | Truth: {gt_class:<20} | Pred: {pred_class:<20} | Conf: {pred_prob:5.1f}% | Loss: {loss_val:.4f}")
 
     axes[rank].imshow(disp_img)
-    axes[rank].set_title(f"Rank #{rank+1}\\nGT: {gt_class}\\nPred: {pred_class}\\nP={pred_prob:.1f}%, L={loss_val:.2f}", fontsize=9)
+    axes[rank].set_title(f"Rank #{rank+1}\\nTruth: {gt_class}\\nPred: {pred_class}\\nP={pred_prob:.1f}%, L={loss_val:.2f}", fontsize=9, pad=8)
     axes[rank].axis("off")
 
-plt.suptitle("Top-5 vzorků s nejvyšší ztrátou (nejtěžší chyby modelu)", fontsize=13, weight="bold")
-plt.tight_layout()
+plt.tight_layout(rect=[0, 0, 1, 0.85])
+plt.suptitle("Top-5 vzorků s nejvyšší ztrátou (nejtěžší chyby modelu)", fontsize=14, weight="bold", y=0.98)
+plt.savefig('top5_failure_analysis.png', dpi=300, bbox_inches='tight')
 plt.show()
 """)
 
