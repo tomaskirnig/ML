@@ -68,9 +68,9 @@ Tento dokument obsahuje strukturu slajdů, textový obsah a mluvnické poznámky
 | **M2 Fáze 2 (Finální model)** | ResNet-50 (celá síť) | Mixup + CutMix | Jemné doladění + Kosinový rozpad | **0.0967** | **97.44 %** | **0.9740** |
 
 * **Závěry:**
-  - Pouhý přenos vah překonal baseline o +4.3 p.b.
-  - Dvoufázové doladění přidalo dalších +11.7 p.b.
-  - Celkový skok: téměř **+16 procentních bodů** při sedminové chybě.
+  - Pouhý přenos vah překonal baseline o +4.3 %.
+  - Dvoufázové doladění přidalo dalších +11.7 %.
+  - Celkový skok: téměř **+16 %** při sedminové chybě.
 
 > 🎙️ **Speaker Note:**  
 > *"Ablační studie jasně dokládá přínos jednotlivých kroků. Pouhé zmrazené příznaky z ImageNetu překonaly baseline hned v první fázi. Kompletní doladění s Mixupem a kosinovým rozpadem pak dosáhlo špičkových 97.44 % na testovacích datech s vyváženým Macro F1 0.9740."*

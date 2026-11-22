@@ -220,9 +220,9 @@ V prvním milníku jsme dosáhli 81.5 %, což byl strop mělkého modelu. Důvod
 <div class="success-box">
 🚀 <b>Závěr ablační studie:</b>
 <ul>
-  <li><b>Pouhý přenos vah (Fáze 1)</b> okamžitě překonal celou natrénovanou baseline síť (<b>+4.3 p.b.</b>).</li>
-  <li><b>Dvoufázové doladění s augmentacemi</b> posunulo přesnost o dalších <b>+11.7 p.b.</b></li>
-  <li><b>Celkové zlepšení:</b> Skok přesnosti o téměř <b>+16 procentních bodů</b> při <b>sedminové chybě</b>!</li>
+  <li><b>Pouhý přenos vah (Fáze 1)</b> okamžitě překonal celou natrénovanou baseline síť (<b>+4.3 %</b>).</li>
+  <li><b>Dvoufázové doladění s augmentacemi</b> posunulo přesnost o dalších <b>+11.7 %</b>.</li>
+  <li><b>Celkové zlepšení:</b> Skok přesnosti o téměř <b>+16 %</b> při <b>sedminové chybě</b>!</li>
 </ul>
 </div>
 
@@ -235,23 +235,31 @@ Ablační studie jasně dokládá přínos jednotlivých kroků. Pouhé zmrazen�
 
 ## 📈 4. Průběh trénování a stabilita konvergence
 
-<div class="columns-wide-right">
+<div class="columns" style="grid-template-columns: 1fr 1fr 1fr; gap: 20px; font-size: 18px; align-items: start;">
 <div>
 
-### Klíčová zjištění z křivek:
-* **Zlom při přechodu do Fáze 2:**  
-  Okamžitý skok přesnosti z 85.8 % na více než 92 % během jediné epochy po rozmrazení.
+* **Zlom po rozmrazení:**  
+  Okamžitý skok přesnosti z 85.8 % na > 92 % během 1. epochy po odemčení sítě.
+
+</div>
+<div>
+
 * **Validační přesnost > Trénovací:**  
-  Trénink běží se silnou regularizací (Mixup, CutMix, Dropout), zatímco validační data jsou čistá. Jasný důkaz absence přetrénování.
+  Trénink brzdí silný Mixup/CutMix, validační data jsou čistá $\to$ nulový overfitting.
+
+</div>
+<div>
+
 * **Kosinové plánování:**  
   Plynulé snižování rychlosti učení zajistilo stabilní usazení v optimálním minimu.
 
 </div>
-<div>
-
-![width:640px](loss_acc_curves.png)
-
 </div>
+
+<div style="text-align: center; margin-top: 15px;">
+
+![width:1150px](loss_acc_curves.png)
+
 </div>
 
 <!--
