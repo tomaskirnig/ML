@@ -1,133 +1,115 @@
 # 📽️ Podklady pro Prezentaci Milestone 2 (7–10 minut)
 
-Tento dokument obsahuje strukturu slajdů, textový obsah, diagramy a **mluvnické poznámky (Speaker Notes)** pro ústní prezentaci před komisí/cvičícím.
+Tento dokument obsahuje strukturu slajdů, textový obsah a mluvnické poznámky (Speaker Notes) pro prezentaci.
 
 ---
 
-## 🕒 Časový harmonogram prezentace (Target: 8 minut)
-* **0:00 – 1:00:** Slide 1 — Úvod, motivace a doména problému (EuroSAT)
-* **1:00 – 2:15:** Slide 2 — Shrnutí M1 Baseline & Důvody přechodu na Transfer Learning
-* **2:15 – 3:45:** Slide 3 — Architektura ResNet-50 & Přizpůsobená hlava
-* **3:45 – 5:15:** Slide 4 — Dvoufázový trénink, Discriminative LR & Mixup/CutMix
-* **5:15 – 6:30:** Slide 5 — Ablační studie & Výsledky na testovací sadě
-* **6:30 – 7:30:** Slide 6 — Diagnostika selhání (Failure Analysis & Top-5 Loss)
-* **7:30 – 8:00:** Slide 7 — Závěr a doporučení pro praxi
+## 🕒 Časový harmonogram prezentace (Cíl: ~7–8 minut)
+* **0:00 – 0:45:** Slide 1 — Úvodní slide (Titul, autor Tomáš Kirnig, cíl)
+* **0:45 – 2:00:** Slide 2 — Doména problému & Dataset EuroSAT (Základní info o datech, třídy, rozdělení)
+* **2:00 – 3:15:** Slide 3 — Porovnání přístupů: M1 Baseline vs. M2 ResNet-50 (Stručné info k modelům)
+* **3:15 – 4:45:** Slide 4 — Srovnání výsledků (Ablační studie: tabulka, klíčový skok o +16 p.b.)
+* **4:45 – 5:45:** Slide 5 — Průběh trénování (Křivky ztráty a přesnosti, stabilita)
+* **5:45 – 6:45:** Slide 6 — Úspěšnost podle tříd (Konfuzní matice, 100% obytné zóny)
+* **6:45 – 7:45:** Slide 7 — Diagnostika selhání (Analýza Top-5 vzorků s nejvyšší ztrátou, závěr)
 
 ---
 
-## 📑 Slide 1: Úvod a doména problému
-### Obsah slajdu:
-* **Projekt:** Klasifikace satelitních snímků zemského pokryvu (Land Cover / Land Use).
-* **Dataset:** EuroSAT (Sentinel-2 satelity, ESA).
-  - 27 000 RGB snímků ve 10 třídách (Forest, River, Highway, Industrial, Residential, Pasture, ...).
-  - Nízké prostorové rozlišení: $64 \times 64$ pixelů na kanál (3 kanály).
-* **Vědecké rozdělení:** Deterministický seed 42 $\to$ 70 % Train (18 900), 20 % Val (5 400), 10 % Test (2 700).
-* **Cíl M2:** Překonat limitaci baseline modelu (~81.5 %) a dosáhnout stavu techniky (>97 %) pomocí transfer learningu a moderních optimalizací.
+## 📑 Slide 1: Titulní snímek
+* **Název:** Klasifikace satelitních snímků EuroSAT
+* **Podnázev:** Milestone 2: Transfer Learning a srovnání výsledků
+* **Autor:** Tomáš Kirnig (`KIR0041`)
+* **Předmět:** Strojové učení (ML)
+* **Model:** ResNet-50 (Transfer Learning) vs Baseline CNN
 
 > 🎙️ **Speaker Note:**  
-> *"Dobrý den. V Milestone 2 řeším úlohu automatické klasifikace satelitních snímků EuroSAT. Sentinel-2 pořizuje snímky s rozlišením 10 metrů na pixel. Na ploše 64×64 pixelů to znamená, že jeden snímek pokrývá oblast zhruba 640×640 metrů. V Milestone 1 jsme ověřili funkčnost čistého PyTorch pipeline na vlastní 3-vrstvé CNN. V Milestone 2 posouváme model do produkční kvality pomocí Transfer Learningu na modelu ResNet-50."*
+> *"Dobrý den. V Milestone 2 řeším úlohu automatické klasifikace satelitních snímků EuroSAT. V prvním milníku jsme ověřili funkčnost trénovacího pipeline na vlastní jednoduché 3-vrstvé CNN. Dnes se zaměříme na přechod k Transfer Learningu s modelem ResNet-50 a detailní porovnání výsledků."*
 
 ---
 
-## 📑 Slide 2: Limitace Baseline (M1) vs. Motivace pro Option A
-### Obsah slajdu:
-* **Výsledky M1 Baseline CNN:**
-  - Test Accuracy: **81.48 %**, Test Loss: **0.6512**, Macro F1: **0.8035**.
-  - Znaky přetrénování: Rozestup mezi train a val loss již po 8. epoše.
-* **Proč mělká síť ze scratch nestačí?**
-  1. *Nízké pole vnímání (Receptive Field):* 3 konvoluce nestačí zachytit globální kontext (např. meandrující řeku vs. dálnici).
-  2. *Nedostatek dat:* 18 900 snímků nestačí na naučení bohatých sémantických filtrů od nuly.
-* **Volba pro M2: Option A (Transfer Learning s ResNet-50):**
-  - Využití vah předtrénovaných na ImageNet-1K (1.28 milionu snímků).
-  - Přenos nízkoúrovňových a středněúrovňových filtrů (hrany, rohy, textury).
+## 📑 Slide 2: Doména problému & Dataset EuroSAT
+* **O datasetu:**
+  - Satelitní snímky Sentinel-2 (Evropská vesmírná agentura ESA).
+  - 27 000 barevných RGB snímků v 10 třídách zemského pokryvu.
+  - Rozlišení: 64×64 pixelů (1 pixel ≈ 10 metrů v terénu).
+* **Rozdělení dat & Cíl:**
+  - Train: 70 % (18 900 snímků).
+  - Validation: 20 % (5 400 snímků).
+  - Test: 10 % (2 700 snímků – nedotčená sada pro finální evaluaci).
+  - Cíl: Spolehlivá automatická klasifikace zemského povrchu.
+* **Vizuál pod textem:** Pás 10 tříd datasetu (AnnualCrop, Forest, HerbaceousVegetation, Highway, Industrial, Pasture, PermanentCrop, Residential, River, SeaLake).
 
 > 🎙️ **Speaker Note:**  
-> *"V prvním milníku jsme narazili na strop mělké architektury. Konvoluční síť se třemi vrstvami dosáhla 81.5 %. Důvodem je malé pole vnímání – filtr nevidí celkový kontext satelitní scény. Místo budování sítě od nuly jsme zvolili Option A ze zadání: přenos znalostí z modelu ResNet-50 předtrénovaného na ImageNetu."*
+> *"Na úvod stručně k datasetu: EuroSAT obsahuje 27 000 snímků z družic Sentinel-2 rozdělených do deseti tříd. Každý snímek má rozlišení 64x64 pixelů a pokrývá plochu cca 640x640 metrů. Data máme rozdělená v poměru 70:20:10. Testovací sada zůstala po celou dobu nedotčená pro finální ověření."*
 
 ---
 
-## 📑 Slide 3: Architektura ResNet-50 & Tvary Tenzorů
-### Obsah slajdu:
-```
-Vstup: (B, 3, 64, 64)
-  │
-  ├─ STEM: Conv1 (7×7, s=2) + BN + MaxPool (s=2) ──► (B, 64, 16, 16)
-  ├─ Layer 1: 3× Bottleneck bloky (stride 1)      ──► (B, 256, 16, 16)
-  ├─ Layer 2: 4× Bottleneck bloky (stride 2)      ──► (B, 512, 8, 8)
-  ├─ Layer 3: 6× Bottleneck bloky (stride 2)      ──► (B, 1024, 4, 4)
-  ├─ Layer 4: 3× Bottleneck bloky (stride 2)      ──► (B, 2048, 2, 2)
-  │
-  ├─ AdaptiveAvgPool2d((1, 1))                    ──► (B, 2048, 1, 1)
-  ├─ Flatten                                      ──► (B, 2048)
-  │
-  └─ Custom Head:
-       ├─ Dropout (p = 0.3)
-       └─ Linear (2048 -> 10)                     ──► (B, 10) Logity
-```
-* **Klíčový detail pro EuroSAT ($64 \times 64$):** Výstup po Layer 4 je přesně `(B, 2048, 2, 2)`.
-* **Reziduální spoje:** $\mathbf{y} = \mathcal{F}(\mathbf{x}) + \mathbf{x} \implies$ gradient $\frac{\partial \mathcal{E}}{\partial \mathbf{y}}$ protéká identitou přímo zpět, řeší problém mizejícího gradientu.
+## 📑 Slide 3: Porovnání přístupů: M1 Baseline vs. M2 ResNet-50
+* **M1: Mělká CNN od nuly:**
+  - 3 konvoluční vrstvy + lineární vrstva.
+  - Limitace: malé pole vnímání, nedostatek dat na naučení hlubokých filtrů, rychlé přetrénování po 8. epoše.
+  - Strop přesnosti: 81.5 %.
+* **M2: ResNet-50 & Transfer Learning:**
+  - Hluboká síť (50 vrstev), předtrénováno na ImageNet-1K (1,28 milionu obrázků).
+  - Dvoufázový trénink: nejprve adaptace nové hlavy, poté jemné doladění celé sítě.
+  - Dynamické augmentace: Mixup a CutMix proti přetrénování.
+* **Klíčová myšlenka:** Místo učení od nuly využíváme hotové obecné vidění a ladíme jen doménovou abstrakci.
 
 > 🎙️ **Speaker Note:**  
-> *"Zde vidíte architekturu a rozměry tenzorů. U vstupu 64×64 je zásadní si uvědomit, že prostorová dimenze klesá přesně na 2×2 na konci čtvrté vrstvy, nikoliv na 7×7 jako u standardního ImageNetu. Původní plně propojenou vrstvu s tisíci výstupy jsme nahradili sekvencí Dropoutu s pravděpodobností 0.3 a novou lineární vrstvou s deseti logity."*
+> *"V prvním milníku jsme dosáhli 81.5 %, což byl strop mělkého modelu. Důvodem bylo malé pole vnímání a nedostatek dat pro učení od nuly. V Milestone 2 jsme sáhli po ResNet-50 předtrénovaném na ImageNetu. Zvolili jsme dvoufázovou strategii: nejprve adaptujeme novou hlavu, potom jemně doladíme celou síť spolu s dynamickými augmentacemi."*
 
 ---
 
-## 📑 Slide 4: Dvoufázový Trénink, Discriminative LR & Dynamické Augmentace
-### Obsah slajdu:
-* **Dvoufázová strategie:**
-  - **Fáze 1: Linear Probing (4 epochy):** Celý backbone zmrazen (`requires_grad=False`), učí se pouze hlava `fc` ($\text{LR}=10^{-3}$, AdamW). Brání *Catastrophic Forgetting*.
-  - **Fáze 2: Fine-Tuning (10 epoch):** Rozmrazení `layer4` a sítě s **diskriminativním LR**:
-    - Backbone: $\text{LR} = 5 \times 10^{-5}$
-    - Klasifikační hlava: $\text{LR} = 10^{-3}$
-  - **Plánovač:** `CosineAnnealingLR` s plynulým rozpadem až k $10^{-6}$.
-* **Dynamické augmentace v čistém PyTorch:**
-  - **Mixup:** Lineární interpolace pixelů a cílů $\tilde{\mathbf{x}} = \lambda \mathbf{x}_i + (1-\lambda)\mathbf{x}_j$.
-  - **CutMix:** Vložení obdélníkového výřezu jiného snímku s úměrným podílem ztráty.
-  - Zabraňují overconfidence modelu a působí jako adaptivní regularizace.
-
-> 🎙️ **Speaker Note:**  
-> *"Pokud bychom celou síť trénovali hned, náhodně inicializovaná hlava by obřími gradienty zničila natrénované váhy backbone. Proto v první fázi učíme pouze novou hlavu. V druhé fázi rozmrazíme celou síť a použijeme diskriminativní learning rate – spodní vrstvy ladíme velmi jemně pomalým LR, zatímco hlavu učíme rychleji. Zároveň aplikujeme Mixup a CutMix přímo v trénovacím cyklu."*
-
----
-
-## 📑 Slide 5: Ablační studie & Výsledky na testovací sadě
-### Obsah slajdu:
-| Model / Fáze | Architektura | Augmentace | Optimalizace | Test Loss | Test Acc | Macro F1 |
+## 📑 Slide 4: Srovnání výsledků (Ablační studie)
+| Model / Vývojová fáze | Architektura | Augmentace | Optimalizace | Test Loss | Test Accuracy | Macro F1 |
 | :--- | :--- | :--- | :--- | :---: | :---: | :---: |
-| **M1 Baseline** | 3-vrstvá CNN | Flipy | Adam, fixní LR | 0.6512 | 81.48 % | 0.8035 |
-| **M2 Fáze 1** | ResNet-50 (Frozen) | Flipy + Crop | AdamW, fixní LR | 0.4628 | 85.78 % | ~0.8550 |
-| **M2 Fáze 2** | ResNet-50 (Unfrozen) | Mixup + CutMix | Cosine Annealing + Disc. LR | **0.0967** | **97.44 %** | **0.9740** |
+| **M1 Baseline** | 3-vrstvá CNN (od nuly) | Základní flipy | Fixní rychlost učení | 0.6512 | 81.48 % | 0.8035 |
+| **M2 Fáze 1 (Linear Probe)** | ResNet-50 (zmrazený) | Flipy + Crop | Trénink pouze hlavy | 0.4628 | 85.78 % | 0.8550 |
+| **M2 Fáze 2 (Finální model)** | ResNet-50 (celá síť) | Mixup + CutMix | Jemné doladění + Kosinový rozpad | **0.0967** | **97.44 %** | **0.9740** |
 
-* **Zrychlení konvergence:** Zmrazený model překonal baseline už v první epoše.
-* **Celkový zisk:** Zvýšení přesnosti o téměř **16 procentních bodů** při sedminové ztrátě.
+* **Závěry:**
+  - Pouhý přenos vah překonal baseline o +4.3 p.b.
+  - Dvoufázové doladění přidalo dalších +11.7 p.b.
+  - Celkový skok: téměř **+16 procentních bodů** při sedminové chybě.
 
 > 🎙️ **Speaker Note:**  
-> *"Zde vidíte výsledky ablační studie. Pouhé zmrazené příznaky z ImageNetu s novou lineární hlavou okamžitě dosáhly 85.78 %. Jakmile jsme v druhé fázi zapojili postupné rozmrazení, diskriminativní LR, Cosine Annealing a Mixup/CutMix s reflection paddingem, testovací přesnost vyskočila na 97.44 % a Macro F1 dosáhl 0.9740. Tím jsme eliminovali jakýkoliv bias vůči méně zastoupeným třídám."*
+> *"Ablační studie jasně dokládá přínos jednotlivých kroků. Pouhé zmrazené příznaky z ImageNetu překonaly baseline hned v první fázi. Kompletní doladění s Mixupem a kosinovým rozpadem pak dosáhlo špičkových 97.44 % na testovacích datech s vyváženým Macro F1 0.9740."*
 
 ---
 
-## 📑 Slide 6: Failure Analysis (Top-5 vzorků s nejvyšší ztrátou)
-### Obsah slajdu:
-* **Analýza vzorků s nejvyšší Cross-Entropy ztrátou na testovacím splitu:**
-  1. *Herbaceous Vegetation vs. Pasture:* Spektrální odrazivost trávy je identická; bez hospodářského kontextu (např. ohrada, pasoucí se dobytek) nerozlišitelné.
-  2. *Highway vs. River:* Nízké rozlišení $64 \times 64$ zkresluje úzké klikatící se linie v lesním porostu; mokrý tmavý asfalt vykazuje stejný kontrast jako vodní hladina.
-  3. *Industrial vs. Residential:* Ploché betonové střechy a sklady mají identickou texturu jako moderní bytové domy.
-* **Závěr z konfuzní matice:** 8 z 10 tříd dosahuje přesnosti >98 %. Záměny nastávají pouze na fyzikálních a doménových hranicích, nikoliv kvůli strukturální chybě modelu.
+## 📑 Slide 5: Průběh trénování a stabilita konvergence
+* **Pozorování z křivek:**
+  - Okamžitý skok přesnosti z 85.8 % na >92 % během 1. epochy po rozmrazení.
+  - Validační přesnost vyšší než trénovací (trénink běží se silnou regularizací Mixup/CutMix/Dropout, validační data jsou čistá).
+  - Kosinové snižování rychlosti učení zajistilo hladké dosednutí do minima.
+* **Vizuál:** Grafy trénovacího a validačního průběhu (Loss, Accuracy, Learning Rate).
 
 > 🎙️ **Speaker Note:**  
-> *"Pro diagnostiku selhání jsme seřadili všech 2 700 testovacích vzorků podle jejich individuální ztráty. Top-5 nejhorších chyb jasně ukazuje fyzikální limity rozlišení 64×64. Model chybuje výhradně v hraničních případech: například u travnatých ploch Pasture vs. Herbaceous Vegetation, kde je spektrální křivka vegetace stejná, nebo u úzkých úseků silnic v lese připomínajících řeku. Nejde tedy o chybu modelu, ale o přirozený šum v popisku satelitních dat."*
+> *"Zde vidíme křivky tréninku. Všimněte si okamžitého zlomu v přesnosti po rozmrazení sítě mezi fázemi. Validační přesnost je vyšší než tréninková, což je přímý důsledek použití Mixupu a CutMixu v tréninku. Model se nepřetrénovává a plynule konverguje k minimální ztrátě."*
 
 ---
 
-## 📑 Slide 7: Závěr a Checklist Zadání
-### Obsah slajdu:
-* ✅ **Option A Splněna:** Předtrénovaný ResNet-50 s adaptovanou hlavou pro 10 tříd.
-* ✅ **Frozen Base & Gradual Unfreezing:** Striktní dvoufázový trénink.
-* ✅ **Discriminative Learning Rates:** Rozdělené skupiny parametrů v optimalizátoru AdamW.
-* ✅ **Dynamic Augmentation:** Vlastní implementace Mixup & CutMix v čistém PyTorch.
-* ✅ **Strukturální regularizace & Schedulery:** Dropout (0.3), Weight Decay ($10^{-4}$), Cosine Annealing.
-* ✅ **Whiteboard & Memory Leak Prevention:** Doloženy tvary tenzorů `(B, C, H, W)`, `torch.no_grad()`, `.item()`.
-* **Kód je 100% reprodukovatelný** a připravený k okamžitému spuštění v Google Colab s GPU akcelerací.
+## 📑 Slide 6: Úspěšnost podle tříd (Konfuzní matice)
+* **Výsledky na 2 700 testovacích snímcích:**
+  - 8 z 10 tříd dosahuje přesnosti > 95 %.
+  - `Residential` (Zástavba): **100.0 %** bez chyby.
+  - `Forest` (Les) & `SeaLake` (Voda): **99.7 %**.
+  - `Industrial` (Průmysl) & `Highway` (Dálnice): **> 98.8 %**.
+* **Drobné doménové překryvy (cca 2 %):**
+  - Bylinná vegetace ↔ Pastviny (spektrálně téměř identická tráva).
+  - Trvalé kultury ↔ Jednoleté plodiny (sady vs pole).
 
 > 🎙️ **Speaker Note:**  
-> *"Na závěr shrnuji, že všechny požadavky Milestone 2 ze zadání byly stoprocentně splněny v čistém PyTorch. Kód notebooku je plně reprodukovatelný se seedem 42 a připravený k okamžitému spuštění na GPU v Google Colab. Děkuji za pozornost a těším se na vaše dotazy u tabule."*
+> *"Na konfuzní matici vidíme naprosto dominantní diagonálu. Obytné zóny dosáhly stoprocentní přesnosti. Lesy, vodní plochy a průmyslové zóny jsou nad 99 procenty. Drobné záměny nastávají pouze mezi pastvinami a divokou bylinnou vegetací, což jsou i pro člověka na 64 pixelech téměř nerozeznatelné plochy."*
+
+---
+
+## 📑 Slide 7: Diagnostika selhání (Analýza nejistých vzorků)
+* **Top-5 vzorků s nejvyšší ztrátou:**
+  - *Pasture → Highway (Loss 7.12, Jistota 93.9 %):* Asfaltová přístupová cesta protíná louku a dominuje 64×64 pixelům.
+  - *Herbaceous → Forest (Loss 6.68, Jistota 95.5 %):* Tmavý hustý křovinatý porost spektrálně splývá s jehličnatým lesem.
+  - *Industrial → Highway (Loss 4.43, Jistota 94.5 %):* Manipulační plocha a vlečka u skladu s lineárním kontrastem.
+* **Závěr:** Model neselhal strukturálně – záměny plynou z fyzikálního rozlišení 64×64 pixelů a reálného vizuálního překryvu v terénu.
+
+> 🎙️ **Speaker Note:**  
+> *"Zanalyzovali jsme vzorky s nejvyšší ztrátou na testovací sadě. Vidíme, že model chyboval naprosto pochopitelně – například polní asfaltka uprostřed pastviny nebo manipulační plocha u skladu s kolejemi. Model se tedy naučil správné vizuální vzorce a naráží jen na fyzikální limit rozlišení. Tímto děkuji za pozornost a těším se na dotazy."*
