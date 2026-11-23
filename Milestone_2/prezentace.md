@@ -12,6 +12,7 @@ Tento dokument obsahuje strukturu slajdů, textový obsah a mluvnické poznámky
 * **4:45 – 5:45:** Slide 5 — Průběh trénování (Křivky ztráty a přesnosti, stabilita)
 * **5:45 – 6:45:** Slide 6 — Úspěšnost podle tříd (Konfuzní matice, 100% obytné zóny)
 * **6:45 – 7:45:** Slide 7 — Diagnostika selhání (Analýza Top-5 vzorků s nejvyšší ztrátou, závěr)
+* **7:45 – 8:00+:** Slide 8 — Závěr (Poděkování za pozornost & Q&A diskuse)
 
 ---
 
@@ -68,9 +69,9 @@ Tento dokument obsahuje strukturu slajdů, textový obsah a mluvnické poznámky
 | **M2 Fáze 2 (Finální model)** | ResNet-50 (celá síť) | Mixup + CutMix | Jemné doladění + Kosinový rozpad | **0.0967** | **97.44 %** | **0.9740** |
 
 * **Závěry:**
-  - Pouhý přenos vah překonal baseline o +4.3 %.
-  - Dvoufázové doladění přidalo dalších +11.7 %.
-  - Celkový skok: téměř **+16 %** při sedminové chybě.
+  - Pouhý přenos vah překonal baseline o +4.3 p. b.
+  - Dvoufázové doladění přidalo dalších +11.7 p. b.
+  - Celkový skok: téměř **+16 p. b.** při sedminové chybě.
 
 > 🎙️ **Speaker Note:**  
 > *"Ablační studie jasně dokládá přínos jednotlivých kroků. Pouhé zmrazené příznaky z ImageNetu překonaly baseline hned v první fázi. Kompletní doladění s Mixupem a kosinovým rozpadem pak dosáhlo špičkových 97.44 % na testovacích datech s vyváženým Macro F1 0.9740."*
@@ -112,4 +113,17 @@ Tento dokument obsahuje strukturu slajdů, textový obsah a mluvnické poznámky
 * **Závěr:** Model neselhal strukturálně – záměny plynou z fyzikálního rozlišení 64×64 pixelů a reálného vizuálního překryvu v terénu.
 
 > 🎙️ **Speaker Note:**  
-> *"Zanalyzovali jsme vzorky s nejvyšší ztrátou na testovací sadě. Vidíme, že model chyboval naprosto pochopitelně – například polní asfaltka uprostřed pastviny nebo manipulační plocha u skladu s kolejemi. Model se tedy naučil správné vizuální vzorce a naráží jen na fyzikální limit rozlišení. Tímto děkuji za pozornost a těším se na dotazy."*
+> *"Zanalyzovali jsme vzorky s nejvyšší ztrátou na testovací sadě. Vidíme, že model chyboval naprosto pochopitelně – například polní asfaltka uprostřed pastviny nebo manipulační plocha u skladu s kolejemi. Model se tedy naučil správné vizuální vzorce a naráží jen na fyzikální limit rozlišení."*
+
+---
+
+## 📑 Slide 8: Závěr & Poděkování za pozornost
+* **Hlavní sdělení:**
+  - Děkuji za pozornost!
+  - Prostor pro dotazy a odbornou diskusi (Q&A).
+* **Shrnutí výsledků Milestone 2:**
+  - ResNet-50 dosáhl na testovací sadě **97.44 % Accuracy** a **0.9740 Macro F1**.
+  - Zlepšení oproti M1 baseline: **+15.96 p. b.** při sedminové chybě.
+
+> 🎙️ **Speaker Note:**  
+> *"Tímto vám děkuji za pozornost a rád zodpovím jakékoliv doplňující dotazy k architektuře, dvoufázovému tréninku nebo výsledkům modelu."*

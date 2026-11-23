@@ -147,8 +147,8 @@ Dobrý den. V Milestone 2 řeším úlohu automatické klasifikace satelitních 
 ### Rozdělení dat & Cíl:
 * **Train (70 %):** 18 900 snímků
 * **Validation (20 %):** 5 400 snímků
-* **Test (10 %):** 2 700 snímků *(vyhodnocen 1× na konci)*
-* **Cíl:** Spolehlivá automatická klasifikace zemského povrchu
+* **Test (10 %):** 2 700 snímků
+* **Cíl:** Spolehlivá klasifikace zemského povrchu
 
 </div>
 </div>
@@ -188,7 +188,6 @@ Na úvod stručně k datasetu: EuroSAT obsahuje 27 000 snímků z družic Sentin
 
 ### Milestone 2: ResNet-50 & Transfer Learning
 * **Předtrénovaný model (ImageNet-1K):**
-  * Hluboká síť (50 vrstev)
   * Zná obecné vizuální prvky (hrany, rohy, textury)
 * **Tréninková strategie:**
   * **Dvoufázový trénink:** nejdříve nová hlava, poté celá síť
@@ -220,9 +219,9 @@ V prvním milníku jsme dosáhli 81.5 %, což byl strop mělkého modelu. Důvod
 <div class="success-box">
 🚀 <b>Závěr ablační studie:</b>
 <ul>
-  <li><b>Pouhý přenos vah (Fáze 1)</b> okamžitě překonal celou natrénovanou baseline síť (<b>+4.3 %</b>).</li>
-  <li><b>Dvoufázové doladění s augmentacemi</b> posunulo přesnost o dalších <b>+11.7 %</b>.</li>
-  <li><b>Celkové zlepšení:</b> Skok přesnosti o téměř <b>+16 %</b> při <b>sedminové chybě</b>!</li>
+  <li><b>Pouhý přenos vah (Fáze 1)</b> okamžitě překonal celou natrénovanou baseline síť (<b>+4.3 p. b.</b>).</li>
+  <li><b>Dvoufázové doladění s augmentacemi</b> posunulo přesnost o dalších <b>+11.7 p. b.</b>.</li>
+  <li><b>Celkové zlepšení:</b> Skok přesnosti o téměř <b>+16 p. b.</b> při <b>sedminové chybě</b>!</li>
 </ul>
 </div>
 
@@ -316,5 +315,31 @@ Na konfuzní matici vidíme naprosto dominantní diagonálu. Obytné zóny dosá
 
 <!--
 Presenter Notes:
-Zanalyzovali jsme vzorky s nejvyšší ztrátou na testovací sadě. Vidíme, že model chyboval naprosto pochopitelně – například polní asfaltka uprostřed pastviny nebo manipulační plocha u skladu s kolejemi. Model se tedy naučil správné vizuální vzorce a naráží jen na fyzikální limit rozlišení. Tímto děkuji za pozornost a těším se na dotazy.
+Zanalyzovali jsme vzorky s nejvyšší ztrátou na testovací sadě. Vidíme, že model chyboval naprosto pochopitelně – například polní asfaltka uprostřed pastviny nebo manipulační plocha u skladu s kolejemi. Model se tedy naučil správné vizuální vzorce a naráží jen na fyzikální limit rozlišení.
+-->
+
+---
+
+<!-- _class: lead -->
+<!-- _paginate: false -->
+<!-- _header: "" -->
+<!-- _footer: "" -->
+
+<div style="text-align: center; margin-top: 65px;">
+
+# 🛰️ Děkuji za pozornost
+
+### Prostor pro dotazy & diskusi (Q&A)
+
+<br>
+
+**Tomáš Kirnig** (`KIR0041`)  
+Klasifikace satelitních snímků EuroSAT • Milestone 2  
+ResNet-50 • Transfer Learning • Test Accuracy **97.44 %**
+
+</div>
+
+<!--
+Presenter Notes:
+Tímto vám děkuji za pozornost a rád zodpovím jakékoliv doplňující dotazy k architektuře, dvoufázovému tréninku nebo výsledkům modelu.
 -->
