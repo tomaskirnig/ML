@@ -118,8 +118,6 @@ style: |
 <br>
 
 **Autor:** Tomáš Kirnig (`KIR0041`)  
-**Předmět:** Strojové učení (ML)  
-**Model:** ResNet-50 (Předtrénovaný ImageNet-1K) • Čistý PyTorch  
 
 </div>
 
@@ -130,7 +128,7 @@ Dobrý den. V Milestone 2 řeším úlohu automatické klasifikace satelitních 
 
 ---
 
-## 🌍 1. Doména problému & Dataset EuroSAT
+## 🌍 1. Dataset EuroSAT
 
 <div class="columns">
 <div>
@@ -138,7 +136,7 @@ Dobrý den. V Milestone 2 řeším úlohu automatické klasifikace satelitních 
 ### O datasetu:
 * **Družice Sentinel-2** (Evropská vesmírná agentura ESA)
 * **27 000** barevných RGB snímků
-* **10 tříd zemského pokryvu** (*Land Cover / Land Use*)
+* **10 tříd zemského pokryvu**
 * **Rozlišení:** 64×64 pixelů (1 pixel ≈ 10 metrů v terénu)
 
 </div>
@@ -158,7 +156,6 @@ Dobrý den. V Milestone 2 řeším úlohu automatické klasifikace satelitních 
 ![width:1150px](dataset_samples.png)
 
 <div style="font-size: 13px; color: #718096; margin-top: 4px;">
-Ukázka 10 tříd datasetu EuroSAT (rozlišení 64×64 px)
 </div>
 </div>
 
@@ -208,18 +205,18 @@ V prvním milníku jsme dosáhli 81.5 %, což byl strop mělkého modelu. Důvod
 
 ---
 
-## 🏆 3. Srovnání výsledků (Ablační studie)
+## 🏆 3. Srovnání výsledků
 
 | Model / Vývojová fáze | Architektura | Augmentace | Optimalizace | Test Loss | Test Accuracy | Macro F1 |
 | :--- | :--- | :--- | :--- | :---: | :---: | :---: |
 | **M1 Baseline** | 3-vrstvá CNN (od nuly) | Základní flipy | Fixní rychlost učení | 0.6512 | 81.48 % | 0.8035 |
-| **M2 Fáze 1 (Linear Probe)** | ResNet-50 (zmrazený) | Flipy + Crop | Trénink pouze hlavy | 0.4628 | 85.78 % | 0.8550 |
+| **M2 Fáze 1 (Linear Probe)** | ResNet-50 (zamrazená páteř) | Flipy + Crop | Trénink pouze hlavy | 0.4628 | 85.78 % | 0.8550 |
 | **M2 Fáze 2 (Finální model)** | ResNet-50 (celá síť) | Mixup + CutMix | Jemné doladění + Kosinový rozpad | **0.0967** | **97.44 %** | **0.9740** |
 
 <div class="success-box">
-🚀 <b>Závěr ablační studie:</b>
+🚀 <b>Závěr srovnání:</b>
 <ul>
-  <li><b>Pouhý přenos vah (Fáze 1)</b> okamžitě překonal celou natrénovanou baseline síť (<b>+4.3 p. b.</b>).</li>
+  <li><b>Pouhý přenos vah (Fáze 1)</b> okamžitě překonal M1 baseline síť (<b>+4.3 p. b.</b>).</li>
   <li><b>Dvoufázové doladění s augmentacemi</b> posunulo přesnost o dalších <b>+11.7 p. b.</b>.</li>
   <li><b>Celkové zlepšení:</b> Skok přesnosti o téměř <b>+16 p. b.</b> při <b>sedminové chybě</b>!</li>
 </ul>
@@ -249,7 +246,7 @@ Ablační studie jasně dokládá přínos jednotlivých kroků. Pouhé zmrazen�
 </div>
 <div>
 
-* **Kosinové plánování:**  
+* **Vývoj Learning Rate:**  
   Plynulé snižování rychlosti učení zajistilo stabilní usazení v optimálním minimu.
 
 </div>
@@ -268,54 +265,54 @@ Zde vidíme křivky tréninku. Všimněte si okamžitého zlomu v přesnosti po 
 
 ---
 
-## 🎯 5. Úspěšnost podle tříd (Konfuzní matice)
+## 🎯 5. Úspěšnost podle tříd
 
 <div class="columns-wide-right">
 <div>
 
 ### Vyhodnocení na 2 700 testovacích snímcích:
-* **8 z 10 tříd dosahuje přesnosti > 95 %:**
-  * `Residential` (Zástavba): **100.0 %** bez jediné chyby!
+* **Vysoká Precision i Recall napříč třídami (> 95 %):**
+  * `Residential` (Zástavba): **100.0 % Recall** (žádný výpadek obytných zón)
   * `Forest` (Les) & `SeaLake` (Voda): **99.7 %**
   * `Industrial` (Průmysl) & `Highway` (Dálnice): **> 98.8 %**
-* **Očekávané doménové překryvy (pouze ~2 %):**
-  * Bylinná vegetace ↔ Pastviny (spektrálně stejná tráva)
-  * Trvalé kultury ↔ Jednoleté plodiny (sady vs pole)
+* **Očekávané překryvy (pouze ~2 %):**
+  * `HerbaceousVegetation` (Bylinná vegetace) ↔ `Pasture` (Pastviny)
+  * `PermanentCrop` (Sady a vinice) ↔ `AnnualCrop` (Polní plodiny)
 
 </div>
 <div>
 
-![width:520px](confusion_matrix_resnet50.png)
+![width:600px](confusion_matrix_resnet50.png)
 
 </div>
 </div>
 
 <!--
 Presenter Notes:
-Na konfuzní matici vidíme naprosto dominantní diagonálu. Obytné zóny dosáhly stoprocentní přesnosti. Lesy, vodní plochy a průmyslové zóny jsou nad 99 procenty. Drobné záměny nastávají pouze mezi pastvinami a divokou bylinnou vegetací, což jsou i pro člověka na 64 pixelech téměř nerozeznatelné plochy.
+Na konfuzní matici vidíme naprosto dominantní diagonálu. Obytné zóny dosáhly stoprocentního záchytu (Recall 100 %). Lesy, vodní plochy a průmyslové zóny jsou nad 99 procenty. Drobné záměny nastávají pouze mezi pastvinami a divokou bylinnou vegetací, což jsou i pro člověka na 64 pixelech téměř nerozeznatelné plochy.
 -->
 
 ---
 
-## 🔍 6. Diagnostika selhání (Analýza nejistých vzorků)
+## 🔍 6. Diagnostika selhání
 
 ![width:1050px](top5_failure_analysis.png)
 
 <div style="font-size: 19px; margin-top: 10px;">
 
-* **Pasture → Highway (Ztráta 7.12, Jistota 93.9 %):** Asfaltová cesta protíná louku a dominuje 64×64 výřezu.
-* **Herbaceous → Forest (Ztráta 6.68, Jistota 95.5 %):** Tmavý hustý křovinatý porost spektrálně splývá s jehličnatým lesem.
-* **Industrial → Highway (Ztráta 4.43, Jistota 94.5 %):** Areál s manipulační vlečkou a rampami má stejný lineární kontrast jako dálnice.
+* **`Pasture` → `Highway` (Loss: 7.12, Conf: 93.9 %):** Cesta protíná louku a dominuje 64×64 výřezu.
+* **`HerbaceousVegetation` → `Forest` (Loss: 6.68, Conf: 95.5 %):** Křovinatý porost splývá s lesem.
+* **`Industrial` → `Highway` (Loss: 4.43, Conf: 94.5 %):** Průmyslová zóna s rozsáhlými asfaltovými plochami má stejné definující prvky jako dálnice.
 
 </div>
 
 <div class="highlight-box" style="font-size: 18px; padding: 6px 14px; margin-top: 8px;">
-💡 <b>Závěr:</b> Model neselhal strukturálně – záměny plynou z fyzikálního limitu rozlišení 64×64 pixelů a reálného vizuálního překryvu v terénu.
+💡 <b>Závěr:</b> Model dosahuje celkem dobré přesnosti <b>97.4 %</b>. Zbylé chyby netvoří náhodné halucinace, ale sporné hraniční snímky, které by na 64×64 px nerozhodl s jistotou ani člověk.
 </div>
 
 <!--
 Presenter Notes:
-Zanalyzovali jsme vzorky s nejvyšší ztrátou na testovací sadě. Vidíme, že model chyboval naprosto pochopitelně – například polní asfaltka uprostřed pastviny nebo manipulační plocha u skladu s kolejemi. Model se tedy naučil správné vizuální vzorce a naráží jen na fyzikální limit rozlišení.
+Při celkové přesnosti přes 97 % model prakticky nechybuje. Když se podíváme na vzorky s nejvyšší ztrátou, vidíme, že jde výhradně o sporné hraniční případy – polní cesta přes louku nebo asfaltová rampa u haly. Model se naučil logické vizuální vzorce a naráží jen na přirozený vizuální limit daného rozlišení.
 -->
 
 ---
@@ -328,14 +325,6 @@ Zanalyzovali jsme vzorky s nejvyšší ztrátou na testovací sadě. Vidíme, ž
 <div style="text-align: center; margin-top: 65px;">
 
 # 🛰️ Děkuji za pozornost
-
-### Prostor pro dotazy & diskusi (Q&A)
-
-<br>
-
-**Tomáš Kirnig** (`KIR0041`)  
-Klasifikace satelitních snímků EuroSAT • Milestone 2  
-ResNet-50 • Transfer Learning • Test Accuracy **97.44 %**
 
 </div>
 

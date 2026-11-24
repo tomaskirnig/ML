@@ -4,9 +4,9 @@ from pathlib import Path
 
 sys.stdout.reconfigure(encoding='utf-8')
 
-nb_path = Path("Milestone_2/ML_KIR0041_milestone_02.ipynb")
+nb_path = Path("Milestone_2/ML_KIR0041_milestone_02_code.ipynb")
 if not nb_path.exists():
-    nb_path = Path("ML_KIR0041_milestone_02.ipynb")
+    nb_path = Path("ML_KIR0041_milestone_02_code.ipynb")
 
 if not nb_path.exists():
     print(f"ERROR: {nb_path} not found!")
@@ -33,7 +33,7 @@ checks = [
     ("Top-5 highest loss failure analysis", "highest" in code_text.lower() or "top" in code_text.lower() and "loss" in code_text.lower()),
     ("Confusion matrix & classification report", "confusion_matrix" in code_text and "classification_report" in code_text),
     ("Ablation study comparison", "ablation" in code_text.lower() or "baseline" in code_text.lower()),
-    ("Native PyTorch loops preserved", "optimizer.zero_grad()" in code_text and "loss.backward()" in code_text and "optimizer.step()" in code_text),
+    ("Native PyTorch loops preserved", "optimizer.zero_grad()" in code_text and ("loss.backward()" in code_text or ".backward()" in code_text) and ("optimizer.step()" in code_text or "scaler.step(optimizer)" in code_text)),
     ("Memory leak prevention (.no_grad, .item)", "torch.no_grad()" in code_text and ".item()" in code_text),
 ]
 

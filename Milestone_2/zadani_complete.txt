@@ -43,3 +43,13 @@ The defense consists of an oral presentation and an interactive code/architectur
 Presentation (approx. 7–10 minutes): problem setup, architecture diagram, ablation studies, and evaluation results
 Methodological defense: walking through tensor dimensions throughout the network; justifying loss functions (e.g. standard cross-entropy vs. focal loss vs. BCEWithLogitsLoss); explaining the difference between training mode (model.train()) and evaluation mode (model.eval())
 Live code inspection: answering questions about random seeds, device placement (.to(device)), and preventing memory leaks in the validation loop (e.g. torch.no_grad(), .detach(), .item())
+
+
+
+Pojmenování souboru se zdrojovým kódem: ML_login_milestone_02_code
+Pojmenování záznamu trénování: ML_login_milestone_02_training_logs
+Pojmenování prezentace: ML_login_projekt_02_presentation
+
+  1. ML_KIR0041_milestone_02_code.ipynb                                                                   
+  2. ML_KIR0041_projekt_02_presentation.pdf                                                               
+  3. ML_KIR0041_milestone_02_training_logs.csv 

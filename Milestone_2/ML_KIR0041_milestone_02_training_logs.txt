@@ -1,0 +1,44 @@
+=== ZAHÁJENÍ FÁZE 1: LINEAR PROBING ===
+Trénovatelných parametrů v Fázi 1: 20,490 (pouze klasifikační hlava)
+Fáze 1 | Epocha 1/4 | Train Loss: 1.1077 | Val Loss: 0.6420 | Val Acc: 82.17%
+Fáze 1 | Epocha 2/4 | Train Loss: 0.7697 | Val Loss: 0.5299 | Val Acc: 84.50%
+Fáze 1 | Epocha 3/4 | Train Loss: 0.7188 | Val Loss: 0.4959 | Val Acc: 84.94%
+Fáze 1 | Epocha 4/4 | Train Loss: 0.6646 | Val Loss: 0.4628 | Val Acc: 85.78%
+Fáze 1 dokončena! Hlava je stabilizována.
+=== ZAHÁJENÍ FÁZE 2: FINE-TUNING S DISKRIMINATIVNÍM LR ===
+Trénovatelných parametrů v Fázi 2: 23,528,522
+Fáze 2 | Epocha  1/10 | LR: 5.00e-05 | Train Loss: 0.7138 | Val Loss: 0.2186 | Val Acc: 92.80% ⭐ [BEST VAL ACC]
+Fáze 2 | Epocha  2/10 | LR: 4.88e-05 | Train Loss: 0.6203 | Val Loss: 0.1811 | Val Acc: 94.37% ⭐ [BEST VAL ACC]
+Fáze 2 | Epocha  3/10 | LR: 4.53e-05 | Train Loss: 0.5388 | Val Loss: 0.1546 | Val Acc: 95.26% ⭐ [BEST VAL ACC]
+Fáze 2 | Epocha  4/10 | LR: 3.99e-05 | Train Loss: 0.5418 | Val Loss: 0.1287 | Val Acc: 95.93% ⭐ [BEST VAL ACC]
+Fáze 2 | Epocha  5/10 | LR: 3.31e-05 | Train Loss: 0.4092 | Val Loss: 0.1303 | Val Acc: 95.96% ⭐ [BEST VAL ACC]
+Fáze 2 | Epocha  6/10 | LR: 2.55e-05 | Train Loss: 0.4325 | Val Loss: 0.1062 | Val Acc: 96.31% ⭐ [BEST VAL ACC]
+Fáze 2 | Epocha  7/10 | LR: 1.79e-05 | Train Loss: 0.4201 | Val Loss: 0.1092 | Val Acc: 96.57% ⭐ [BEST VAL ACC]
+Fáze 2 | Epocha  8/10 | LR: 1.11e-05 | Train Loss: 0.4593 | Val Loss: 0.1149 | Val Acc: 96.94% ⭐ [BEST VAL ACC]
+Fáze 2 | Epocha  9/10 | LR: 5.68e-06 | Train Loss: 0.4239 | Val Loss: 0.1135 | Val Acc: 96.87%
+Fáze 2 | Epocha 10/10 | LR: 2.20e-06 | Train Loss: 0.4645 | Val Loss: 0.0989 | Val Acc: 96.96% ⭐ [BEST VAL ACC]
+
+Trénování dokončeno! Načteny nejlepší váhy s Val Acc: 96.96%
+=== VÝSLEDKY NA TESTOVACÍ SADĚ (2 700 VZORKŮ) ===
+  • Test Loss:     0.0967
+  • Test Accuracy: 97.44%
+  • Macro F1:      0.9740
+
+Classification Report:
+                      precision    recall  f1-score   support
+
+          AnnualCrop     0.9668    0.9700    0.9684       300
+              Forest     0.9614    0.9967    0.9787       300
+HerbaceousVegetation     0.9689    0.9333    0.9508       300
+             Highway     0.9686    0.9880    0.9782       250
+          Industrial     0.9920    0.9920    0.9920       250
+             Pasture     0.9844    0.9450    0.9643       200
+       PermanentCrop     0.9595    0.9480    0.9537       250
+         Residential     0.9677    1.0000    0.9836       300
+               River     0.9797    0.9640    0.9718       250
+             SeaLake     1.0000    0.9967    0.9983       300
+
+            accuracy                         0.9744      2700
+           macro avg     0.9749    0.9734    0.9740      2700
+        weighted avg     0.9745    0.9744    0.9743      2700
+
